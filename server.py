@@ -2,25 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import io
-import threading
-from PIL import Image, ImageFilter
-from tqdm import tqdm
+from utils import saveImage2File, clearImage
+
+def run():
+    addr, port = socket.gethostname(), 12356
+    server = socket.socket()
+    server.bind((addr, port))
+    server.listen()
+    conn, addr = server.accept()
+    saveImage2File(conn, 'raw_duck.png')
+    clearImage('raw_duck.png')
+    conn.close()
 
 
 if __name__ == '__main__':
-    addr = socket.gethostname()
-    port = 1235
-    server = socket.socket()
-    server.bind((addr,port))
-    server.listen()
-    conn, addr = server.accept()
-    f = open('server_duck.png','wb')
-    image_chunk = conn.recv(2048)
-
-    while image_chunk:
-        f.write(image_chunk)
-        image_chunk = conn.recv(2048)
-
-    f.close()
-    conn.close()
+    run()
